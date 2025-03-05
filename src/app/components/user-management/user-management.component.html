@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">Back</ion-button>
+    </ion-buttons>
+    <ion-title>User Management</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Add User Form -->
+  <ion-item>
+    <ion-label position="floating">Name</ion-label>
+    <ion-input [(ngModel)]="newUser.name" name="name" placeholder="Enter full name"></ion-input>
+  </ion-item>
+  <ion-note *ngIf="!newUser.name && formSubmitted" color="danger">Name is required.</ion-note>
+
+  <ion-item>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input [(ngModel)]="newUser.email" name="email" type="email" placeholder="Enter email"></ion-input>
+  </ion-item>
+  <ion-note *ngIf="!newUser.email && formSubmitted" color="danger">Email is required.</ion-note>
+
+  <ion-item>
+    <ion-label position="floating">Password</ion-label>
+    <ion-input [(ngModel)]="newUser.password" name="password" type="password" placeholder="Enter password"></ion-input>
+  </ion-item>
+  <ion-note *ngIf="!newUser.password && formSubmitted" color="danger">Password is required.</ion-note>
+
+  <ion-item>
+    <ion-label>Is Admin?</ion-label>
+    <ion-toggle [(ngModel)]="newUser.isAdmin"></ion-toggle>
+  </ion-item>
+
+  <ion-button expand="full" (click)="addUser()" [disabled]="isLoading">
+    <ion-spinner *ngIf="isLoading"></ion-spinner>
+    <span *ngIf="!isLoading">Add User</span>
+  </ion-button>
+
+  <!-- List of Users -->
+  <ion-list>
+    <ng-container *ngIf="users.length > 0; else noUsers">
+      <ion-item *ngFor="let user of users">
+        <ion-label>{{ user.name }} - {{ user.email }} - Role: {{ user.role }}</ion-label>
+        <ion-toggle [(ngModel)]="user.isAdmin" (ionChange)="editUser(user)" slot="end"></ion-toggle>
+        <ion-button slot="end" color="primary" (click)="editUser(user)" [disabled]="user.role === 'root'">Edit</ion-button>
+        <ion-button slot="end" color="danger" (click)="deleteUser(user.id!)">Delete</ion-button>
+      </ion-item>
+    </ng-container>
+
+    <ng-template #noUsers>
+      <ion-item>
+        <ion-label class="ion-text-center">No users found.</ion-label>
+      </ion-item>
+    </ng-template>
+  </ion-list>
+</ion-content>

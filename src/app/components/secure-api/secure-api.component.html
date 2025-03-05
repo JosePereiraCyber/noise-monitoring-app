@@ -1,0 +1,7 @@
+<div *ngIf="data">
+  <h2>Protected Data</h2>
+  <pre>{{ data | json }}</pre>
+</div>
+<div *ngIf="!data">
+  <p>Loading...</p>
+</div>

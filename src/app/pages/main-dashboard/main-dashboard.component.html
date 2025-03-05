@@ -1,0 +1,47 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Main Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <!-- Logout Button with Hover Animation -->
+      <ion-button 
+        (click)="logout()" 
+        (mouseenter)="onButtonHover(true)" 
+        (mouseleave)="onButtonHover(false)"
+        [@buttonAnimation]="buttonState"
+      >
+        Logout
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Navigation Buttons -->
+  <div class="navigation-buttons">
+    <ion-button [routerLink]="['/circles']" expand="full">
+      View Circles
+    </ion-button>
+    <ion-button [routerLink]="['/statistics']" expand="full">
+      Go to Statistics
+    </ion-button>
+    <ion-button [routerLink]="['/alerts']" expand="full">
+      Go to Alerts
+    </ion-button>
+
+  
+    <!-- Admin Page Content -->
+    <ng-container *ngIf="isAdmin">
+      <app-admin-dashboard></app-admin-dashboard>
+    </ng-container>
+    
+  
+    <!-- Normal content for non-admins can go here -->
+    <div *ngIf="!isAdmin">
+      <p>You don't have access to admin functionality.</p>
+    </div>
+    <ion-button [routerLink]="['/admin']" expand="full">
+      Go to Admin
+    </ion-button>
+  </div>
+</ion-content>

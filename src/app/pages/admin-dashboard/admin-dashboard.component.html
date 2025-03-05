@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Admin Panel</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+<div class="admin-section">
+  <h2></h2>
+  <p>Only visible to admin users.</p>
+
+  Admin features, buttons, etc. 
+  <button>Manage Users</button>
+  <button>View Logs</button>
+  <button>System Settings</button>
+
+  <!-- Display Users -->
+  <ion-list>
+    <ion-item *ngFor="let user of users">
+      {{ user.name }} - {{ user.email }}
+      <ion-button slot="end" (click)="deleteUser(user.id)">Delete</ion-button>
+    </ion-item>
+  </ion-list>
+</div>

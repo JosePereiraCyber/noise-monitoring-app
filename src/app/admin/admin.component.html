@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">Back</ion-button>
+    </ion-buttons>
+    <ion-title>Admin Panel</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="admin-section">
+    <!-- Admin Features, Buttons, etc. -->
+    <ion-button (click)="manageUsers()">Manage Users</ion-button>
+    <ion-button (click)="viewLogs()">View Logs</ion-button>
+    <ion-button (click)="systemSettings()">System Settings</ion-button>
+
+    <!-- Display Users -->
+    <ion-list *ngIf="users.length > 0; else noUsersTemplate">
+      <ion-item *ngFor="let user of users">
+        <ion-label>
+          {{ user.name }} - {{ user.email }}
+        </ion-label>
+        <ion-button slot="end" color="danger" (click)="deleteUser(user.id)">Delete</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <!-- No Users Template -->
+    <ng-template #noUsersTemplate>
+      <ion-item>
+        <ion-label>No users available.</ion-label>
+      </ion-item>
+    </ng-template>
+
+    <!-- Loading Spinner -->
+    <ion-spinner *ngIf="loading" name="bubbles"></ion-spinner>
+
+    <!-- Error Message -->
+    <ion-item *ngIf="loginError">
+      <ion-label color="danger">{{ loginError }}</ion-label>
+    </ion-item>
+  </div>
+</ion-content>

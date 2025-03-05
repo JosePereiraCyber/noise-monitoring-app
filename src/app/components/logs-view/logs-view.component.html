@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">Back</ion-button>
+    </ion-buttons>
+    <ion-title>Logs View</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="logs-container">
+    <h2>Logs View</h2>
+
+    <!-- Check if logs are available -->
+    <div *ngIf="logs && logs.length > 0; else noLogsTemplate">
+      <!-- Use standard HTML table instead of ion-table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Log Level</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.level }}</td>
+            <td>{{ log.message }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No logs available message -->
+    <ng-template #noLogsTemplate>
+      <p>No logs available</p>
+    </ng-template>
+  </div>
+</ion-content>

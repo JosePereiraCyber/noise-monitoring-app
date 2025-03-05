@@ -1,0 +1,27 @@
+ion-content {
+  --ion-background-color: hsl(62, 97%, 24%);
+}
+
+ion-item {
+  margin-bottom: 16px;
+}
+
+ion-button {
+  margin-top: 24px;
+}
+
+ion-text {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+}
+
+a {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+ion-spinner {
+  margin-right: 8px;
+}

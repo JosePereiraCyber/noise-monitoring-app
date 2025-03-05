@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Username Field -->
+  <ion-item>
+    <ion-label position="floating">Username</ion-label>
+    <ion-input [(ngModel)]="username" name="username" placeholder="Enter your username"></ion-input>
+  </ion-item>
+
+  <!-- Password Field -->
+  <ion-item>
+    <ion-label position="floating">Password</ion-label>
+    <ion-input [(ngModel)]="password" name="password" type="password" placeholder="Enter your password"></ion-input>
+  </ion-item>
+
+  <!-- Login Button -->
+  <ion-button expand="full" (click)="login()" [disabled]="!username || !password">Login</ion-button>
+
+  <!-- Error Message -->
+  <ion-text color="danger" *ngIf="loginError">
+    <p>{{ loginError }}</p>
+  </ion-text>
+</ion-content>

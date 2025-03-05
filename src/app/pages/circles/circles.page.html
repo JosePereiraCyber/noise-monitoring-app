@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">Back</ion-button>
+    </ion-buttons>
+    <ion-title>Traffic Light</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Traffic Light Component -->
+  <app-traffic-light [activeLight]="activeLight"></app-traffic-light>
+</ion-content>

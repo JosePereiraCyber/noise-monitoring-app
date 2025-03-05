@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Add User Form -->
+  <ion-toolbar>
+    <ion-title>Sign In</ion-title>
+  </ion-toolbar>
+  <ion-item>
+    <ion-label position="floating">Name</ion-label>
+    <ion-input [(ngModel)]="newUser.name" name="name" placeholder="Enter full name"></ion-input>
+ 
+    <ion-label position="floating">Email</ion-label>
+    <ion-input [(ngModel)]="newUser.email" name="email" type="email" placeholder="Enter email"></ion-input>
+
+    <ion-label position="floating">Password</ion-label>
+    <ion-input [(ngModel)]="newUser.password" name="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter password"></ion-input>
+    <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
+      <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+    </ion-button>
+    <ion-button expand="full" (click)="addNewUser()" [disabled]="!newUser.name || !newUser.email || !newUser.password || isLoading">
+      <ion-spinner *ngIf="isLoading"></ion-spinner>
+      <span *ngIf="!isLoading">Add User</span>
+    </ion-button>
+  </ion-item>
+  <!-- Display Users -->
+ <!--/
+  <ion-list>
+    <ion-item *ngFor="let user of users">
+      {{ user.name }} - {{ user.email }}
+      <ion-button slot="end" (click)="deleteUser(user.id)">Delete</ion-button>
+    </ion-item>
+  </ion-list>
+/-->
+  <!-- Login Form -->
+  <ion-item>
+    <ion-label position="floating">Username</ion-label>
+    <ion-input [(ngModel)]="username" name="username" placeholder="Enter your username"></ion-input>
+    <ion-label position="floating">Password</ion-label>
+    <ion-input [(ngModel)]="password" name="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password"></ion-input>
+    <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
+      <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+    </ion-button>
+    <ion-checkbox [(ngModel)]="rememberMe"></ion-checkbox>
+    <ion-label>Remember Me</ion-label>
+   
+  </ion-item>
+  <ion-button expand="full" (click)="login()" [disabled]="!username || !password || isLoading">
+    <ion-spinner *ngIf="isLoading"></ion-spinner>
+    <span *ngIf="!isLoading">Login</span>
+  </ion-button>
+ 
+
+  <!-- Forgot Password Link -->
+  <ion-text>
+    <p class="ion-text-center">
+      <a (click)="forgotPassword()">Forgot Password?</a>
+    </p>
+  </ion-text>
+
+  <!-- Error Message -->
+  <ion-text color="danger" *ngIf="loginError">
+    <p class="ion-text-center">{{ loginError }}</p>
+  </ion-text>
+</ion-content>
