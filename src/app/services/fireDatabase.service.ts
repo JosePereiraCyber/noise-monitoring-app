@@ -2,7 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, query, where } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import CryptoJS from 'crypto-js';
+
+interface User {
+  id?: string;
+  name: string;
+  email: string;
+  role: string;
+  isAdmin: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -12,30 +19,25 @@ export class FireDatabaseService {
   private auth: Auth = inject(Auth);
   private router: Router = inject(Router);
 
-  // Initialize Firebase (no separate initialization needed)
   async initializeDatabase(): Promise<boolean> {
     console.log('Firebase initialized');
     await this.createRootAdminIfNeeded();
     return true;
   }
 
-  // Create root admin if it doesn't exist
   private async createRootAdminIfNeeded() {
     const rootAdminEmail = 'root@admin.com';
-    const rootAdminPassword = CryptoJS.SHA256('rootpassword').toString();
+    const rootAdminPassword = 'rootpassword';
 
-    // Check if root admin already exists
     const usersRef = collection(this.firestore, 'users');
     const q = query(usersRef, where('email', '==', rootAdminEmail));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      // Create root admin user
       const userCredential = await createUserWithEmailAndPassword(this.auth, rootAdminEmail, rootAdminPassword);
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         name: 'Root Admin',
         email: rootAdminEmail,
-        password: rootAdminPassword,
         role: 'root',
         isAdmin: true,
       });
@@ -43,12 +45,8 @@ export class FireDatabaseService {
     }
   }
 
-  // Add a user
   async addUser(name: string, email: string, password: string, role: string): Promise<boolean> {
-    const hashedPassword = CryptoJS.SHA256(password).toString();
-
     try {
-      // Check if user with the same email already exists
       const usersRef = collection(this.firestore, 'users');
       const q = query(usersRef, where('email', '==', email));
       const querySnapshot = await getDocs(q);
@@ -58,14 +56,10 @@ export class FireDatabaseService {
         return false;
       }
 
-      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-
-      // Add user to Firestore
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         name,
         email,
-        password: hashedPassword,
         role,
         isAdmin: role === 'admin',
       });
@@ -78,13 +72,11 @@ export class FireDatabaseService {
     }
   }
 
-  // Update a user
-  async updateUser(updatedUser: any): Promise<boolean> {
+  async updateUser(updatedUser: User): Promise<boolean> {
     try {
-      await updateDoc(doc(this.firestore, 'users', updatedUser.id), {
+      await updateDoc(doc(this.firestore, 'users', updatedUser.id!), {
         name: updatedUser.name,
         email: updatedUser.email,
-        password: updatedUser.password,
         role: updatedUser.role,
         isAdmin: updatedUser.role === 'admin',
       });
@@ -96,31 +88,24 @@ export class FireDatabaseService {
     }
   }
 
-  // Get all users
-  async getUsers(): Promise<any[]> {
+  async getUsers(): Promise<User[]> {
     try {
       const usersRef = collection(this.firestore, 'users');
       const querySnapshot = await getDocs(usersRef);
-      return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
     } catch (error) {
       console.error('Error fetching users:', error);
       return [];
     }
   }
 
-  // Validate login
-  async validateLogin(email: string, password: string): Promise<{ success: boolean; user?: any }> {
-    const hashedPassword = CryptoJS.SHA256(password).toString();
-
+  async validateLogin(email: string, password: string): Promise<{ success: boolean; user?: User }> {
     try {
-      // Sign in with Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-
-      // Fetch user details from Firestore
       const userDoc = await getDocs(query(collection(this.firestore, 'users'), where('email', '==', email)));
       if (!userDoc.empty) {
         const user = userDoc.docs[0].data();
-        return { success: true, user: { id: userDoc.docs[0].id, ...user } };
+        return { success: true, user: { id: userDoc.docs[0].id, ...user } as User };
       } else {
         console.log('User not found in Firestore');
         return { success: false };
@@ -131,11 +116,10 @@ export class FireDatabaseService {
     }
   }
 
-  // Delete a user
   async deleteUser(id: string): Promise<boolean> {
     try {
       await deleteDoc(doc(this.firestore, 'users', id));
-      await signOut(this.auth); // Log out the current user
+      await signOut(this.auth);
       console.log('User deleted from Firebase');
       return true;
     } catch (error) {
@@ -144,10 +128,9 @@ export class FireDatabaseService {
     }
   }
 
-  // Update user role
-  async editUserRole(user: any, newRole: string): Promise<boolean> {
+  async editUserRole(user: User, newRole: string): Promise<boolean> {
     try {
-      await updateDoc(doc(this.firestore, 'users', user.id), { role: newRole });
+      await updateDoc(doc(this.firestore, 'users', user.id!), { role: newRole });
       console.log('User role updated:', user.name);
       return true;
     } catch (error) {
@@ -156,7 +139,6 @@ export class FireDatabaseService {
     }
   }
 
-  // Check if the current user is a root admin
   async isRootAdmin(): Promise<boolean> {
     const user = await this.auth.currentUser;
     if (user) {
@@ -166,7 +148,6 @@ export class FireDatabaseService {
     return false;
   }
 
-  // Logout the current user
   async logout(): Promise<void> {
     await signOut(this.auth);
     this.router.navigate(['/login']);
